@@ -1,12 +1,4 @@
-## Put comments here that give an overall description of what your
-## functions do
-
-## This function created list of function, which imitates object-like behaviour.
-## We may perform four actions:
-## set - save matrix in our 'object' and clear inverse matrix value
-## get - retrive matrix
-## setinv - set value of inv variable (supposed to be inverse matrix)
-## getinv - retrive value of inv variable (supposed to be inverse matrix)
+## This function creates a special "matrix" object that can cache its inverse.
 
 makeCacheMatrix <- function(x = matrix()) {
   inv <- NULL
@@ -17,25 +9,24 @@ makeCacheMatrix <- function(x = matrix()) {
   get <- function() x
   setinv <- function(invMatrix) inv <<- invMatrix
   getinv <- function() inv
-  list(set = set, get = get, setinv = setinv, getinv = getinv)
+  list(set = set, get = get,
+       setinv = setinv,
+       getinv = getinv)
 }
 
-
-## Write a short comment describing this function
-
-## This function calculates inverse matrix using 'solve' function with default 'b' argument
-## to save the time result is saved using the scope rules of R. Next time it uses saved result
-## function works only with 'objects' created with makeCacheMatrix function
+## This function computes the inverse of the special "matrix" returned by makeCacheMatrix above. 
+## If the inverse has already been calculated (and the matrix has not changed), then the cachesolve 
+## should retrieve the inverse from the cache.
 
 cacheSolve <- function(x, ...) {
   ## Return a matrix that is the inverse of 'x'
-  inv <- x$getinv()
-  if(!is.null(inv)) {
+  invMatrix <- x$getinv()
+  if(!is.null(invMatrix)) {
     message("getting cached data")
-    return(inv)
+    return(invMatrix)
   }
   matrix <- x$get()
-  inv <- solve(matrix, ...)
-  x$setinv(inv)
-  inv
+  invMatrix <- solve(matrix, ...)
+  x$setinv(invMatrix)
+  invMatrix
 }
